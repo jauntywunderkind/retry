@@ -23,16 +23,24 @@ export function AsyncRetry( fn, opt){
 						await Delay( p.delay)
 					}
 					--p.remaining
+					if( p.onRetry){
+						try {
+							p.onRetry( ex)
+						}catch( ex){
+						}
+					}
 				}
 				reject( ex)
 			})
 			p.tries= p.remaining= factory.tries
 			p.delay= factory.delay
+			p.onRetry= factory.onRetry
 			return p
 		}}[ name]
 	factory.fn= fn
 	factory.delay= opt&& opt.delay
 	factory.tries= opt&& opt.tries|| -1
+	factory.onRetry= opt&& opt.onRetry
 	if( isNaN( factory.tries)){
 		throw new Error( `Invalid tries '${factory.tries}'`)
 	}

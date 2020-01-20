@@ -8,7 +8,8 @@ export function AsyncRetry( fn, opt){
 	const
 		name= `${fn.name||""}Retrier`,
 		factory= {[ name]: function( ...opt){
-			const p= new Promise( async (resolve, reject)=> {
+			let p
+			p= new Promise( async (resolve, reject)=> {
 				let ex
 				while( !p|| p.remaining!== 0){
 					try{

@@ -1,0 +1,22 @@
+{
+	"name": "async-retry",
+	"version": "1.0.0",
+	"description": "wrap a function in a retrier",
+	"main": "async-retry.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://archive.voodoowarez.com/async-retry"
+	},
+	"keywords": [],
+	"author": "jauntywunderkind",
+	"license": "MIT",
+	"module": "async-retry.js",
+	"esm": true,
+	"type": "module",
+	"dependencies": {
+		"delay": "^4.3.0"
+	}
+}

@@ -8,10 +8,22 @@ export function AsyncRetry( fn, opt){
 	const
 		name= `${fn.name||""}Retrier`,
 		factory= {[ name]: function( ...opt){
-			let p
-			p= new Promise( async (resolve, reject)=> {
+			let res
+			function calc( name){
+				let value= res[ name]
+				if( value=== undefined){
+					value= res.factory[ name]
+				}
+				if( value instanceof Function){
+					value= value.call( p)
+				}
+				return value
+			}
+
+			res= new Promise( async (resolve, reject)=> {
 				let ex
-				while( !p|| p.remaining!== 0){
+				while( !res|| res.remaining!== 0){
+					// try
 					try{
 						const value= await factory.fn.call( this, ...opt)
 						resolve( value)
@@ -19,23 +31,29 @@ export function AsyncRetry( fn, opt){
 					}catch( e){
 						ex= e
 					}
-					if( p.delay){
-						await Delay( p.delay)
+					// consume try
+					--res.remaining
+
+					// delay
+					const delay= calc( "delay")
+					if( delay!== undefined){
+						await Delay( delay)
 					}
-					--p.remaining
-					if( p.onRetry){
+
+					// fire onRetry
+					const retry= calc( "onRetry")
+					if( retry){
 						try {
-							p.onRetry( ex)
+							retry.call( res)
 						}catch( ex){
 						}
 					}
 				}
 				reject( ex)
 			})
-			p.tries= p.remaining= factory.tries
-			p.delay= factory.delay
-			p.onRetry= factory.onRetry
-			return p
+			res.start= Date.now()
+			res.factory= factory
+			return res
 		}}[ name]
 	factory.fn= fn
 	factory.delay= opt&& opt.delay

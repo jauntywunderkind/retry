@@ -118,7 +118,7 @@ export function factory( fn, opt){
 	if( isNaN( this.retries)){
 		throw new Error( `Invalid 'retries': '${this.retries}'`)
 	}
-	return function( ...opt){
+	return ( ...opt)=> {
 		return new AsyncRetryPromise( this, ...opt)
 	}
 }

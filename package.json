@@ -1,5 +1,5 @@
 {
-	"name": "async-retry",
+	"name": "@jauntywunderkind/async-retry",
 	"version": "1.0.0",
 	"description": "wrap a function in a retrier",
 	"main": "retry.js",

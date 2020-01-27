@@ -8,6 +8,11 @@ export function delayer( ctx){
 	return Delay( ctx.delay)
 }
 
+export function attempter(){
+	++ctx.count
+	return Promise.resolve( ctx.operation())
+}
+
 export function _delayer(){
 	if( ctx.retries>= 0&& ctx.count>= ctx.retries){
 		throw new Error("No retries left")
@@ -37,28 +42,26 @@ exponentiator.expRandom= 1.618
 
 export function Retry( operation, opt){
 	const ctx= Object.assign({
+		operation,
 		retries: -1,
 		count: 0,
 		minTimeout: 1000,
 		maxTimeout: MINUTES_10,
 		delay: 0, // current delay
 		timeout: -1,
-		delayer,
 		...exponentiator
 	}, opt)
-	function attempt( ctx){
-		
-	}
 	const machine= createMachine({
 		initial: state(
 			transition( "start", "attempt")
 		),
-		attempt: invoke( attempt,
+		attempt: invoke( attempter,
 			transition( "done", "done"),
 			transition( "error", "delay")
 		),
-		delay: state(
-			transition( "retry", "attempt")
+		delay: invoke( delayer,
+			transition( "done", "attempt"),
+			transition( "error", "error")
 		),
 		done: final(),
 		error: final()

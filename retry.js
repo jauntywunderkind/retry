@@ -3,45 +3,37 @@ import { createMachine, state as final, state} from "robot3"
 
 const MINUTES_10= 1000* 60* 10
 
-async function get( slot, ctx){
-	const value= ctx[ slot]
-	if( value instanceof Function){
-		return value.call( ctx)
-	}else{
-		return value
-	}
+export function delayer( ctx){
+	ctx.delay= _delayer( ctx)
+	return Delay( ctx.delay)
 }
 
-export function delayer( ctx){
+export function _delayer(){
+	if( ctx.retries>= 0&& ctx.count>= ctx.retries){
+		throw new Error("No retries left")
+	}
 	const
-		exponentiator= await get( "exponentiator", ctx),
-		exponent= exponentiator( ctx),
-		old= await get( "delay", ctx),
-		unchecked= exponent* old,
-		minTimeout= await get( "minTimeout", ctx)
-	if( unchecked< minTimeout){
+		mult= ctx.exponentiator(),
+		delay= mult* (ctx.delay|| 0)
+	if( ctx.minTimeout>= 0&& delay< ctx.minTimeout){
 		return minTimeout
 	}
-	const maxTimeout= await get( "maxTimeout", ctx)
-	if( unchecked> maxTimeout){
+	if( ctx.maxTimeout>= 0&& delay> maxTimeout){
 		return maxTimeout
 	}
-	return unchecked
+	return delay
 }
 
 export function exponentiator( ctx){
-	const
-		base= await get( "factor", ctx),
-		rand= await get( "random", ctx)
-	if( rand< 1|| isNaN( rand)){
-		return delay* base
+	if( ctx.expRandom< 1|| isNaN( ctx.expRandom)){
+		return ctx.expFactor
 	}
-	const rf= Math.random()* (rand- 1)
-	return rf+ 1
+	const rf= Math.random()* (ctx.expRandom- 1)
+	return ctx.expFactor* (rf+ 1)
 }
 exponentiator.exponentiator= exponentiator
-exponentiator.factor= 1.618
-exponentiator.random= 1.618
+exponentiator.expFactor= 1.618
+exponentiator.expRandom= 1.618
 
 export function Retry( operation, opt){
 	const ctx= Object.assign({
@@ -54,9 +46,11 @@ export function Retry( operation, opt){
 		delayer,
 		...exponentiator
 	}, opt)
+	function attempt(){
+	}
 
 	const machine= createMachine({
-		attempt: invoke( attempt),
+		attempt: invoke( attempt,
 			transition( "done", "done"),
 			transition( "error", "delay")
 		),

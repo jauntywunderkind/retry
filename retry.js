@@ -46,10 +46,13 @@ export function Retry( operation, opt){
 		delayer,
 		...exponentiator
 	}, opt)
-	function attempt(){
+	function attempt( ctx){
+		
 	}
-
 	const machine= createMachine({
+		initial: state(
+			transition( "start", "attempt")
+		),
 		attempt: invoke( attempt,
 			transition( "done", "done"),
 			transition( "error", "delay")
@@ -59,6 +62,13 @@ export function Retry( operation, opt){
 		),
 		done: final(),
 		error: final()
-	}, ctx)
+	}, initial=> {
+		return { ...ctx, ...initial}
+	})
+	if( opt&& opt.start!== false){
+		// queue machine to start
+		Delay( 0).then( function(){ machine.send( "start") })
+	}
+	return machine
 }
 export default retry

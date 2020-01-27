@@ -1,3 +1,3 @@
-# async-retry
+# async-iter-retry
 
-> wrap a function in a retrier
+> retrier built around an async-iterable state machine

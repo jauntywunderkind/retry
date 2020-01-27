@@ -18,21 +18,9 @@ tape( "fixture", async function( t){
 })
 
 tape( "can retry", async function( t){
-	const
-		fn= Fail(),
-		retry= Retry( fn),
-		got= await retry()
-	t.pass( "eventual success")
 	t.end()
 })
 
 tape( "can delay", async function( t){
-	const
-		tStart= Date.now(),
-		fn= Fail( 2),
-		retry= Retry( fn,{ delay: 5}),
-		got= await retry(),
-		diff= Date.now()- tStart
-	t.ok( diff>= 9, "two delays")
 	t.end()
 })

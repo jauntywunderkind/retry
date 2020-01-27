@@ -1,7 +1,7 @@
 {
-	"name": "@jauntywunderkind/async-retry",
+	"name": "async-iter-retry",
 	"version": "1.0.0",
-	"description": "wrap a function in a retrier",
+	"description": "retrier built around an async-iterable state machine",
 	"main": "retry.js",
 	"scripts": {
 		"test": "./.test/index.js"
@@ -17,7 +17,9 @@
 	"esm": true,
 	"type": "module",
 	"dependencies": {
-		"delay": "^4.3.0"
+		"async-iter-robot3": "^1.0.0",
+		"delay": "^4.3.0",
+		"robot3": "^0.2.9"
 	},
 	"devDependencies": {
 		"tape": "^4.13.0"

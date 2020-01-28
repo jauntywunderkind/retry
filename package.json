@@ -19,6 +19,7 @@
 	"dependencies": {
 		"async-iter-robot3": "^1.0.0",
 		"delay": "^4.3.0",
+		"promise-underlie": "^1.0.0",
 		"robot3": "^0.2.9"
 	},
 	"devDependencies": {

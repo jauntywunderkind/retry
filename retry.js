@@ -45,35 +45,49 @@ exponentiator.exponentiator= exponentiator
 exponentiator.expFactor= 1.618
 exponentiator.expRandom= 1.618
 
+export function makeInitializer( /*optional*/ operation, opt){
+	if( typeof operation!== "function"&& opt=== undefined){
+		opt= operation
+		operation= opt.operation
+	}
+	return function initializer( initial){
+		return {
+			retries: Number.POSITIVE_INFINITY,
+			count: 0,
+			minTimeout: 1000,
+			maxTimeout: MINUTES_10,
+			delay: 0, // current delay
+			timeout: -1,
+			...exponentiator,
+			...opt,
+			operation,
+			...initial
+		}
+	}
+}
+
+export const machine= {
+	initial: state(
+		transition( "start", "attempt")
+	),
+	attempt: invoke( attempter,
+		transition( "done", "done"),
+		transition( "error", "delay")
+	),
+	delay: invoke( delayer,
+		transition( "done", "attempt"),
+		transition( "error", "error")
+	),
+	done: final(),
+	error: final()
+}
+
 export function Retry( operation, opt){
-	const ctx= Object.assign({
-		operation,
-		retries: Number.POSITIVE_INFINITY,
-		count: 0,
-		minTimeout: 1000,
-		maxTimeout: MINUTES_10,
-		delay: 0, // current delay
-		timeout: -1,
-		...exponentiator
-	}, opt)
-	const machine= createMachine({
-		initial: state(
-			transition( "start", "attempt")
-		),
-		attempt: invoke( attempter,
-			transition( "done", "done"),
-			transition( "error", "delay")
-		),
-		delay: invoke( delayer,
-			transition( "done", "attempt"),
-			transition( "error", "error")
-		),
-		done: final(),
-		error: final()
-	}, initial=> {
-		return { ...ctx, ...initial}
-	})
-	return machine
+	const machine_= createMachine(
+		machine,
+		makeInitializer( operation, opt)
+	)
+	return machine_
 }
 export default Retry
 

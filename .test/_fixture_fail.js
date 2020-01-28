@@ -1,11 +1,12 @@
 export function FixtureFail( fails= 1){
 	async function Fail(){
 		// while fails
-		if( Fail.fails-- > 0){
+		if( Fail.count++< Fail.fails){
 			// fail
 			throw new Error( "Fixture deliberately failed")
 		}
 	}
+	Fail.count= 0
 	Fail.fails= fails
 	return Fail
 }

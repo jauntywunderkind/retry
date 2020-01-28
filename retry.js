@@ -1,5 +1,5 @@
 import Delay from "delay"
-import { createMachine, state as final, state} from "robot3"
+import { createMachine, state as final, invoke, state, transition} from "robot3"
 
 const MINUTES_10= 1000* 60* 10
 
@@ -8,22 +8,22 @@ export function delayer( ctx){
 	return Delay( ctx.delay)
 }
 
-export function attempter(){
+export function attempter( ctx){
 	++ctx.count
 	return Promise.resolve( ctx.operation())
 }
 
-export function _delayer(){
+export function _delayer( ctx){
 	if( ctx.retries>= 0&& ctx.count>= ctx.retries){
 		throw new Error("No retries left")
 	}
 	const
-		mult= ctx.exponentiator(),
+		mult= ctx.exponentiator( ctx),
 		delay= mult* (ctx.delay|| 0)
 	if( ctx.minTimeout>= 0&& delay< ctx.minTimeout){
 		return minTimeout
 	}
-	if( ctx.maxTimeout>= 0&& delay> maxTimeout){
+	if( ctx.maxTimeout>= 0&& delay> ctx.maxTimeout){
 		return maxTimeout
 	}
 	return delay
@@ -43,7 +43,7 @@ exponentiator.expRandom= 1.618
 export function Retry( operation, opt){
 	const ctx= Object.assign({
 		operation,
-		retries: -1,
+		retries: Number.POSITIVE_INFINITY,
 		count: 0,
 		minTimeout: 1000,
 		maxTimeout: MINUTES_10,
@@ -68,10 +68,6 @@ export function Retry( operation, opt){
 	}, initial=> {
 		return { ...ctx, ...initial}
 	})
-	if( opt&& opt.start!== false){
-		// queue machine to start
-		Delay( 0).then( function(){ machine.send( "start") })
-	}
 	return machine
 }
-export default retry
+export default Retry

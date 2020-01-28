@@ -21,10 +21,10 @@ export function _delayer( ctx){
 		mult= ctx.exponentiator( ctx),
 		delay= mult* (ctx.delay|| 0)
 	if( ctx.minTimeout>= 0&& delay< ctx.minTimeout){
-		return minTimeout
+		return ctx.minTimeout
 	}
 	if( ctx.maxTimeout>= 0&& delay> ctx.maxTimeout){
-		return maxTimeout
+		return ctx.maxTimeout
 	}
 	return delay
 }

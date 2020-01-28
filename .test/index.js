@@ -8,27 +8,49 @@ import Changes from "./_fixture_changes.js"
 import Fail from "./_fixture_fail.js"
 import {} from "./_fixture_fail.test.js"
 
-const noMinTimeout= {
-	minTimeout: 0
-}
-
 tape( "can retry", async function( t){
 	t.plan( 4)
 	const
 		fail= Fail(),
-		changes= Changes(),
-		retryMachine= Retry( fail, noMinTimeout),
+		changes= Changes( function(){
+			t.equal( changes.attempt, 2, "saw attempt=2")
+			t.equal( changes.delay, 1, "saw retry=1")
+			t.equal( changes.done, 1, "saw done=1")
+			t.equal( retry.context.count, 2, "count=2")
+			t.end()
+		}),
+		retryMachine= Retry( fail, { minTimeout: 0}),
 		retry= interpret( retryMachine, changes)
 	retry.send( "start")
-	await Delay( 3)
 
-	t.equal( changes.attempt, 2, "saw attempt=2")
-	t.equal( changes.delay, 1, "saw retry=1")
-	t.equal( changes.done, 1, "saw done=1")
-	t.equal( retry.context.count, 2, "count=2")
-	t.end()
 })
 
 tape( "can delay", async function( t){
-	t.end()
+	t.plan( 3)
+	const
+		start= Date.now(),
+		fail= Fail( 2),
+		changes= Changes( function(){
+			t.ok( Date.now()- start>= 8, "time>=8")
+			t.ok( retry.context.delay>= 8, "delay>=8")
+			t.equal( retry.context.count, 3, "count=3")
+			t.end()
+		}),
+		retryMachine= Retry( fail, { minTimeout: 4}),
+		retry= interpret( retryMachine, changes)
+	retry.send( "start")
+})
+
+tape( "can set exponentiation factor", async function( t){
+	t.plan( 1)
+	const
+		start= Date.now(),
+		fail= Fail( 1),
+		changes= Changes( function(){
+			t.equal( retry.context.delay, 4, "delay=4")
+			t.end()
+		}),
+		retryMachine= Retry( fail, { minTimeout: 4, expFactor: 3}),
+		retry= interpret( retryMachine, changes)
+	retry.send( "start")
 })

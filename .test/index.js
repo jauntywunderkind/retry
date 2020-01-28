@@ -7,6 +7,7 @@ import Retry, { Interpret} from "../retry.js"
 import Changes from "./_fixture_changes.js"
 import Fail from "./_fixture_fail.js"
 import {} from "./_fixture_fail.test.js"
+import {} from "./promise.js"
 
 tape( "can retry", async function( t){
 	t.plan( 5)
@@ -66,7 +67,7 @@ tape( "interpret helper", async function( t){
 		retry= Interpret( fail,{ minTimeout: 0, onChange})
 })
 
-tape( "can run out of retries", async function( t){
+tape( "can run out of tries", async function( t){
 	t.plan( 3)
 	const
 		fail= Fail( 2),

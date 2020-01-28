@@ -1,13 +1,14 @@
+import Delay from "delay"
 import PromiseUnderlie from "promise-underlie/promise-underlie.js"
 import { interpret} from "robot3"
-import Interpret from "./retry.js"
+import { Interpret} from "./retry.js"
 
-export function Retry( fn, opt){
+export function Retry( fn, opt= {}){
 	if( !( this instanceof Retry)){
 		return new Retry( fn, opt)
 	}
 	let _res, _rej
-	this.promise= new Promise( function( resolve, reject){
+	const promise= new Promise( function( resolve, reject){
 		_res= resolve
 		_rej= reject
 	})
@@ -25,7 +26,30 @@ export function Retry( fn, opt){
 		}
 	}
 
-	this.interpret= Interpret( fn, { ...opt, onChange})
+	const interpret= Interpret( fn, { ...opt, onChange})
+	Object.defineProperties( this, {
+		promise: {
+			value: promise
+		},
+		interpret: {
+			value: interpret
+		},
+		context: {
+			get: function(){
+				return this.interpret.context
+			}
+		},
+		machine: {
+			get: function(){
+				return this.interpret.machine
+			}
+		},
+		send: {
+			get: function( value){
+				return this.interpret.send( value)
+			}
+		}
+	})
 	return this
 }
 PromiseUnderlie( Retry)

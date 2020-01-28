@@ -17,7 +17,7 @@ export function main( opt= {}){
 			if( ctx.machine.current!== "delay"){
 				return
 			}
-			if( verbose|| true){
+			if( verbose){
 				log( JSON.stringify({
 					"retry": true,
 					time: Date.now()- tStart,

@@ -15,7 +15,7 @@ export async function attempter( ctx){
 }
 
 export function _delayer( ctx){
-	if( ctx.retries>= 0&& ctx.count>= ctx.retries){
+	if( ctx.tries>= 0&& ctx.count>= ctx.tries){
 		throw new Error("No retries left")
 	}
 	const
@@ -48,7 +48,7 @@ export function makeInitializer( /*optional*/ operation, opt){
 	}
 	return function initializer( initial){
 		return {
-			retries: Number.POSITIVE_INFINITY,
+			tries: Number.POSITIVE_INFINITY,
 			count: 0,
 			minTimeout: 1000,
 			maxTimeout: MINUTES_10,
@@ -56,8 +56,10 @@ export function makeInitializer( /*optional*/ operation, opt){
 			timeout: -1,
 			...exponentiator,
 			...opt,
+			...(opt&& opt.retries!== undefined&& { tries: opt.retries+ 1}),
 			operation,
-			...initial
+			...initial,
+			...(initial&& initial.retries!== undefined&& { tries: initial.retries+ 1})
 		}
 	}
 }

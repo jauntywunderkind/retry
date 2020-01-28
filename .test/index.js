@@ -32,7 +32,7 @@ tape( "can delay", async function( t){
 		fail= Fail( 2),
 		changes= Changes( function(){
 			t.ok( Date.now()- start>= 8, "time>=8")
-			t.ok( retry.context.delay>= 8, "delay>=8")
+			t.ok( retry.context.delay>= 4*1.618*1.618, "delay>=min")
 			t.equal( retry.context.count, 3, "count=3")
 			t.end()
 		}),

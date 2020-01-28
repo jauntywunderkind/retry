@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import Delay from "delay"
-import { createMachine, state as final, invoke, state, transition} from "robot3"
+import { createMachine, state as final, interpret as Interpret, invoke, state, transition} from "robot3"
 
 const MINUTES_10= 1000* 60* 10
 
@@ -81,6 +81,10 @@ export const machine= {
 	done: final(),
 	error: final()
 }
+export {
+	machine as Machine,
+	machine as RetryMachine
+}
 
 export function Retry( operation, opt){
 	const machine_= createMachine(
@@ -90,6 +94,22 @@ export function Retry( operation, opt){
 	return machine_
 }
 export default Retry
+
+export function interpret( operation, opt= {}){
+	const
+		machine= Retry( operation, opt),
+		interpret= Interpret( machine, opt.onChange|| function(){})
+	if( opt.start!== false){
+		Delay( 0).then( function(){
+			interpret.send( "start")
+		})
+	}
+	return interpret
+}
+export {
+	interpret as Interpret,
+	interpret as RetryInterpret
+}
 
 if( typeof process!== "undefined"&& `file://${process.argv[ 1]}`=== import.meta.url){
 	import( "./main.js").then( main=> main.default())

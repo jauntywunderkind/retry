@@ -3,7 +3,7 @@ import Delay from "delay"
 import { interpret} from "robot3"
 import tape from "tape"
 
-import Retry from "../retry.js"
+import Retry, { Interpret} from "../retry.js"
 import Changes from "./_fixture_changes.js"
 import Fail from "./_fixture_fail.js"
 import {} from "./_fixture_fail.test.js"
@@ -53,4 +53,15 @@ tape( "can set exponentiation factor", async function( t){
 		retryMachine= Retry( fail, { minTimeout: 4, expFactor: 3}),
 		retry= interpret( retryMachine, changes)
 	retry.send( "start")
+})
+
+tape( "interpret", async function( t){
+	t.plan( 1)
+	const
+		fail= Fail(),
+		onChange= Changes( function(){
+			t.equal( retry.context.count, 2, "count=2")
+			t.end()
+		}),
+		retry= Interpret( fail,{ minTimeout: 0, onChange})
 })

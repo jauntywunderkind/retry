@@ -1,6 +1,6 @@
 {
 	"name": "@jauntywunderkind/retry",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "retrier built around an async-iterable state machine",
 	"main": "retry.js",
 	"scripts": {

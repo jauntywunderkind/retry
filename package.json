@@ -1,5 +1,5 @@
 {
-	"name": "async-iter-retry",
+	"name": "@jauntywunderkind/retry",
 	"version": "1.0.0",
 	"description": "retrier built around an async-iterable state machine",
 	"main": "retry.js",
@@ -8,7 +8,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://archive.voodoowarez.com/async-retry"
+		"url": "https://archive.voodoowarez.com/retry"
 	},
 	"keywords": [],
 	"author": "jauntywunderkind",

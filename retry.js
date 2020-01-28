@@ -10,7 +10,11 @@ export function delayer( ctx){
 
 export function attempter( ctx){
 	++ctx.count
-	return Promise.resolve( ctx.operation())
+	try{
+		return Promise.resolve( ctx.operation())
+	}catch( ex){
+		return Promise.reject( ex)
+	}
 }
 
 export function _delayer( ctx){

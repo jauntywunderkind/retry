@@ -5,8 +5,8 @@ export function Changes( done){
 			currentCount= (changes[ current]|| 0)+ 1
 		changes[ current]= currentCount
 		++changes.count
-		if( current=== "done"){
-			done()
+		if( current=== "done"|| current=== "error"){
+			done( ctx)
 		}
 	}
 	changes.count= 0

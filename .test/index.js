@@ -65,3 +65,21 @@ tape( "interpret helper", async function( t){
 		}),
 		retry= Interpret( fail,{ minTimeout: 0, onChange})
 })
+
+tape( "can run out of retries", async function( t){
+	t.plan( 3)
+	const
+		fail= Fail( 2),
+		onChange= Changes( function( ctx){
+			t.equal( retry.context.count, 2, "count=2")
+			t.equal( retry.machine.current, "error", "state=error")
+			t.ok( retry.context.error instanceof Error, "context has error")
+			try{
+				fail()
+			}catch(ex){
+				t.fail( "fail should have passed now")
+			}
+			t.end()
+		}),
+		retry= Interpret( fail,{ onChange, minTimeout: 0, onChange, tries: 2})
+})

@@ -4,18 +4,14 @@ import { createMachine, state as final, interpret as Interpret, invoke, state, t
 
 const MINUTES_10= 1000* 60* 10
 
-export function delayer( ctx){
+export async function delayer( ctx){
 	ctx.delay= _delayer( ctx)
 	return Delay( ctx.delay)
 }
 
-export function attempter( ctx){
+export async function attempter( ctx){
 	++ctx.count
-	try{
-		return Promise.resolve( ctx.operation())
-	}catch( ex){
-		return Promise.reject( ex)
-	}
+	return ctx.operation()
 }
 
 export function _delayer( ctx){

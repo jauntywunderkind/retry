@@ -13,11 +13,13 @@ export function Retry( fn, opt= {}){
 		_rej= reject
 	})
 
-	const _onChange= opt.onChange
+	// create a wrapper onChange that does user + our handler
+	let _onChange= opt.onChange
 	function onChange( ctx, ev){
 		if( _onChange){
 			_onChange( ctx, ev)
 		}
+
 		const current= ctx.machine.current
 		if( current=== "done"){
 			_res( ctx.result)
@@ -33,6 +35,14 @@ export function Retry( fn, opt= {}){
 		},
 		interpret: {
 			value: interpret
+		},
+		onChange: {
+			get: function(){
+				return _onChange
+			},
+			set: function( onChange){
+				_onChange= onChange
+			}
 		},
 		context: {
 			get: function(){

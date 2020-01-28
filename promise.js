@@ -19,9 +19,9 @@ export function Retry( fn, opt){
 		}
 		const current= ctx.machine.current
 		if( current=== "done"){
-			_res()
+			_res( ctx.result)
 		}else if( current=== "error"){
-			_rej()
+			_rej( ctx.error)
 		}
 	}
 

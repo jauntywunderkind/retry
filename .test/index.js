@@ -55,7 +55,7 @@ tape( "can set exponentiation factor", async function( t){
 	retry.send( "start")
 })
 
-tape( "interpret", async function( t){
+tape( "interpret helper", async function( t){
 	t.plan( 1)
 	const
 		fail= Fail(),

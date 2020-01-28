@@ -9,7 +9,7 @@ import Fail from "./_fixture_fail.js"
 import {} from "./_fixture_fail.test.js"
 
 tape( "can retry", async function( t){
-	t.plan( 4)
+	t.plan( 5)
 	const
 		fail= Fail(),
 		changes= Changes( function(){
@@ -17,12 +17,12 @@ tape( "can retry", async function( t){
 			t.equal( changes.delay, 1, "saw retry=1")
 			t.equal( changes.done, 1, "saw done=1")
 			t.equal( retry.context.count, 2, "count=2")
+			t.equal( retry.context.result, 42, "result=42")
 			t.end()
 		}),
 		retryMachine= Retry( fail, { minTimeout: 0}),
 		retry= interpret( retryMachine, changes)
 	retry.send( "start")
-
 })
 
 tape( "can delay", async function( t){

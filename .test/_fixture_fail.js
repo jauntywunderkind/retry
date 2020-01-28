@@ -5,6 +5,7 @@ export function FixtureFail( fails= 1){
 			// fail
 			throw new Error( "Fixture deliberately failed")
 		}
+		return 42
 	}
 	Fail.count= 0
 	Fail.fails= fails

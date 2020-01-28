@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import Delay from "delay"
-import { createMachine, state as final, interpret as Interpret, invoke, state, transition} from "robot3"
+import { createMachine, state as final, interpret as Interpret, invoke, reduce, state, transition} from "robot3"
 
 const MINUTES_10= 1000* 60* 10
 
@@ -62,13 +62,23 @@ export function makeInitializer( /*optional*/ operation, opt){
 	}
 }
 
+const saveResult= reduce( function saveResult( ctx, ev){
+	ctx.result= ev.data
+	ctx.error= null
+	return ctx
+})
+const saveError= reduce( function saveError( ctx, ev){
+	ctx.error= ev.error
+	return ctx
+})
+
 export const machine= {
 	initial: state(
 		transition( "start", "attempt")
 	),
 	attempt: invoke( attempter,
-		transition( "done", "done"),
-		transition( "error", "delay")
+		transition( "done", "done", saveResult),
+		transition( "error", "delay", saveError)
 	),
 	delay: invoke( delayer,
 		transition( "done", "attempt"),

@@ -18,7 +18,7 @@ export function main( opt= {}){
 				return
 			}
 			if( verbose|| true){
-				console.error( JSON.stringify({
+				log( JSON.stringify({
 					"retry": true,
 					time: Date.now()- tStart,
 					delay: ctx.context.delay,

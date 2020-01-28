@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import Delay from "delay"
 import { createMachine, state as final, invoke, state, transition} from "robot3"
 
@@ -75,3 +76,7 @@ export function Retry( operation, opt){
 	return machine
 }
 export default Retry
+
+if( typeof process!== "undefined"&& `file://${process.argv[ 1]}`=== import.meta.url){
+	import( "./main.js").then( main=> main.default())
+}

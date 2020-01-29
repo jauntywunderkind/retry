@@ -21,7 +21,7 @@ tape( "can retry", async function( t){
 			t.equal( retry.context.result, 42, "result=42")
 			t.end()
 		}),
-		retryMachine= Retry( fail, { minTimeout: 0}),
+		retryMachine= Retry( fail, { minDelay: 0}),
 		retry= interpret( retryMachine, changes)
 	retry.send( "start")
 })
@@ -37,7 +37,7 @@ tape( "can delay", async function( t){
 			t.equal( retry.context.count, 3, "count=3")
 			t.end()
 		}),
-		retryMachine= Retry( fail, { minTimeout: 4}),
+		retryMachine= Retry( fail, { minDelay: 4}),
 		retry= interpret( retryMachine, changes)
 	retry.send( "start")
 })
@@ -51,7 +51,7 @@ tape( "can set exponentiation factor", async function( t){
 			t.equal( retry.context.delay, 4, "delay=4")
 			t.end()
 		}),
-		retryMachine= Retry( fail, { minTimeout: 4, expFactor: 3}),
+		retryMachine= Retry( fail, { minDelay: 4, expFactor: 3}),
 		retry= interpret( retryMachine, changes)
 	retry.send( "start")
 })
@@ -64,7 +64,7 @@ tape( "interpret helper", async function( t){
 			t.equal( retry.context.count, 2, "count=2")
 			t.end()
 		}),
-		retry= Interpret( fail,{ minTimeout: 0, onChange})
+		retry= Interpret( fail,{ minDelay: 0, onChange})
 })
 
 tape( "can run out of tries", async function( t){
@@ -82,5 +82,5 @@ tape( "can run out of tries", async function( t){
 			}
 			t.end()
 		}),
-		retry= Interpret( fail,{ onChange, minTimeout: 0, onChange, tries: 2})
+		retry= Interpret( fail,{ onChange, minDelay: 0, onChange, tries: 2})
 })

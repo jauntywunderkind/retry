@@ -9,7 +9,7 @@ tape( "promise delay", async function( t){
 	const	
 		start= Date.now(),
 		fail= Fail( 2),
-		retry= Retry( fail, { minTimeout: 4}),
+		retry= Retry( fail, { minDelay: 4}),
 		result= await retry
 	t.ok( Date.now()- start>= 8, "time>=8")
 	t.ok( retry.context.delay>= 4*1.618, `delay>=min`)

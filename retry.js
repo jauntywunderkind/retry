@@ -21,11 +21,11 @@ export function _delayer( ctx){
 	const
 		mult= ctx.exponentiator( ctx),
 		delay= mult* (ctx.delay|| 0)
-	if( ctx.minTimeout>= 0&& delay< ctx.minTimeout){
-		return ctx.minTimeout
+	if( ctx.minDelay>= 0&& delay< ctx.minDelay){
+		return ctx.minDelay
 	}
-	if( ctx.maxTimeout>= 0&& delay> ctx.maxTimeout){
-		return ctx.maxTimeout
+	if( ctx.maxDelay>= 0&& delay> ctx.maxDelay){
+		return ctx.maxDelay
 	}
 	return delay
 }
@@ -50,8 +50,8 @@ export function makeInitializer( /*optional*/ operation, opt){
 		return {
 			tries: Number.POSITIVE_INFINITY,
 			count: 0,
-			minTimeout: 1000,
-			maxTimeout: MINUTES_10,
+			minDelay: 1000,
+			maxDelay: MINUTES_10,
 			delay: 0, // current delay
 			timeout: -1,
 			...exponentiator,
